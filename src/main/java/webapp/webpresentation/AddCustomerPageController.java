@@ -26,7 +26,6 @@ public class AddCustomerPageController extends PageController{
 			String phone = request.getParameter("phone");
 			String designation = request.getParameter("designation");
 			if (isInt(ch, vat, "Invalid VAT number") && isInt(ch, phone, "Invalid phone number")) {
-				System.out.println("tou ca");
 				int vatNumber = intValue(vat);
 				int phoneNumber = intValue(phone);
 				cs.addCustomer(vatNumber, designation, phoneNumber);

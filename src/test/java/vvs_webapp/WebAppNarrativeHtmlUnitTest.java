@@ -10,11 +10,9 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.*;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
-import com.gargoylesoftware.htmlunit.html.HtmlTable;
 
 import webapp.CreateDatabase;
 
-import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.io.*;
 import java.util.*;
@@ -48,6 +46,7 @@ public class WebAppNarrativeHtmlUnitTest {
 		webClient.close();
 	}
 
+	// a)
 	@Test
 	public void insertTwoAddressesInSameClientTest() throws IOException {
 		final String VAT = "197672337"; // vat of exisiting customer
@@ -65,7 +64,6 @@ public class WebAppNarrativeHtmlUnitTest {
 		List<Object> addressesTableList =  reportPage.getByXPath("//table");
 		int nRowsBefore = 1; // start with 1 to count with header
 		if (! addressesTableList.isEmpty()) {
-			System.out.println("ola");
 			HtmlTable table =  (HtmlTable) addressesTableList.get(0);
 			nRowsBefore = table.getRowCount();
 		}
@@ -109,8 +107,89 @@ public class WebAppNarrativeHtmlUnitTest {
 		//Assert num of rows increased by 2
 		assertEquals(nRowsBefore + 2, addressesTable.getRowCount());
 		
-		///////////////////////////// REVERT ////////////////////////////
+		//TODO: /////////////////////// REVERT /////////////////////////
+	}
+	
+	// b)
+	@Test
+	public void insertTwoCustomersAndCheckInListAllCustomersTest() throws IOException {
+		final String VAT1 = "123456789";
+		final String DESIG1 = "desgination1";
+		final String PHONE1 = "1";
 		
+		final String VAT2 = "512345678";
+		final String DESIG2 = "desgination2";
+		final String PHONE2 = "2";
+		
+		// 1. Add customers
+		HtmlAnchor addCustomerLink = page.getAnchorByHref("addCustomer.html");
+		HtmlPage nextPage = (HtmlPage) addCustomerLink.openLinkInNewWindow();
+		HtmlForm addCustomerForm = nextPage.getForms().get(0);
+
+		HtmlInput vatInput = addCustomerForm.getInputByName("vat");
+		vatInput.setValueAttribute(VAT1);
+		HtmlInput designationInput = addCustomerForm.getInputByName("designation");
+		designationInput.setValueAttribute(DESIG1);
+		HtmlInput phoneInput = addCustomerForm.getInputByName("phone");
+		phoneInput.setValueAttribute(PHONE1);
+		HtmlInput submit = addCustomerForm.getInputByName("submit");
+		HtmlPage reportPage = submit.click();
+		
+		vatInput.setValueAttribute(VAT2);
+		designationInput.setValueAttribute(DESIG2);
+		phoneInput.setValueAttribute(PHONE2);
+		reportPage = submit.click();
+		
+		// 2. Check List All Customers
+		HtmlAnchor listAllCustomersLink = page.getAnchorByHref("GetAllCustomersPageController");
+		nextPage = (HtmlPage) listAllCustomersLink.openLinkInNewWindow();
+		String textAllCustomers = nextPage.asText();
+		
+		assertTrue(textAllCustomers.contains(VAT1));
+		assertTrue(textAllCustomers.contains(DESIG1));
+		assertTrue(textAllCustomers.contains(PHONE1));
+		
+		assertTrue(textAllCustomers.contains(VAT2));
+		assertTrue(textAllCustomers.contains(DESIG2));
+		assertTrue(textAllCustomers.contains(PHONE2));
+		
+		
+		///////////////////////////// REVERT //////////////////////////////////////////
+		HtmlAnchor removeCustomerLink = page.getAnchorByHref("RemoveCustomerPageController");
+		nextPage = (HtmlPage) removeCustomerLink.openLinkInNewWindow();
+		HtmlForm removeCustomerForm = nextPage.getForms().get(0);
+		
+		vatInput = removeCustomerForm.getInputByName("vat");
+		vatInput.setValueAttribute(VAT1);
+		
+		submit = removeCustomerForm.getInputByName("submit");
+		reportPage = submit.click();
+		vatInput.setValueAttribute(VAT2);
+		reportPage = submit.click();
+		// TODO: Assert para garantir que apaguei os customers?
+		
+	}
+	
+	//c)
+	@Test
+	public void openSaleForClientTest() throws IOException {
+		final String VAT = "197672337"; // vat of exisiting customer
+		
+		HtmlAnchor addSaleLink = page.getAnchorByHref("addSale.html");
+		HtmlPage nextPage = (HtmlPage) addSaleLink.openLinkInNewWindow();
+		HtmlForm addSaleForm = nextPage.getForms().get(0);
+
+		HtmlInput vatInput = addSaleForm.getInputByName("customerVat");
+		vatInput.setValueAttribute(VAT);
+		HtmlInput submit = addSaleForm.getInputByValue("Add Sale");
+
+		HtmlPage reportPage = submit.click();
+		String textReportPage = reportPage.asText();
+		
+		// TODO: Nao tenho como apagar para reverter
+		// TODO: se ja tiver uma aberta antes do teste, este teste nao serve para nada
+			// verificar que a tabela tem mais uma row e que a ultima, que e a que metemos, estah aberta?
+		assertTrue(textReportPage.contains("O"));
 	}
 
 }
