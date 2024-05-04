@@ -170,11 +170,12 @@ public class WebAppNarrativeHtmlUnitTest {
 		
 	}
 	
-	//c)
+	//c) e d)
 	@Test
-	public void openSaleForClientTest() throws IOException {
+	public void openSaleForClientAndCloseItTest() throws IOException {
 		final String VAT = "197672337"; // vat of exisiting customer
 		
+		// c) Create a Sale for the client
 		HtmlAnchor addSaleLink = page.getAnchorByHref("addSale.html");
 		HtmlPage nextPage = (HtmlPage) addSaleLink.openLinkInNewWindow();
 		HtmlForm addSaleForm = nextPage.getForms().get(0);
@@ -186,10 +187,44 @@ public class WebAppNarrativeHtmlUnitTest {
 		HtmlPage reportPage = submit.click();
 		String textReportPage = reportPage.asText();
 		
-		// TODO: Nao tenho como apagar para reverter
 		// TODO: se ja tiver uma aberta antes do teste, este teste nao serve para nada
-			// verificar que a tabela tem mais uma row e que a ultima, que e a que metemos, estah aberta?
-		assertTrue(textReportPage.contains("O"));
+//		assertTrue(textReportPage.contains("O"));
+		
+		// TODO: verificar que a tabela tem mais uma row?
+		// TODO:  a ultima row que e a que metemos, estah aberta?
+		HtmlTable salesTable = (HtmlTable) reportPage.getByXPath("//table").get(0);
+		HtmlTableRow latestSale = salesTable.getRow(salesTable.getRowCount() - 1);
+		List<HtmlTableCell> cells = latestSale.getCells();
+		final String SALE_ID= cells.get(0).asText();
+		assertEquals("O", cells.get(3).asText());
+		assertEquals(VAT, cells.get(4).asText());
+		
+		// d) Close the sale
+		HtmlAnchor closeSaleLink = page.getAnchorByHref("UpdateSaleStatusPageControler");
+		nextPage = (HtmlPage) closeSaleLink.openLinkInNewWindow();
+		HtmlForm closeSaleForm = nextPage.getForms().get(0);
+
+		HtmlInput saleIdInput = closeSaleForm.getInputByName("id");
+		saleIdInput.setValueAttribute(SALE_ID);
+		submit = closeSaleForm.getInputByValue("Close Sale");
+
+		reportPage = submit.click();
+		//  Get the table and check that the the intended sale is closed
+		salesTable = (HtmlTable) reportPage.getByXPath("//table").get(0);
+		latestSale = salesTable.getRow(salesTable.getRowCount() - 1);
+		cells = latestSale.getCells();
+		assertEquals(SALE_ID, cells.get(0).asText());
+		assertEquals("C", cells.get(3).asText());
+		assertEquals(VAT, cells.get(4).asText());
+		
+		// TODO: Nao tenho como apagar para reverter
+
+	}
+	
+	// TODO: Check that all intermediate pages have the expected information.
+	@Test
+	public void createCustomerThenSaleThenDeliveryAndShowDeliveryTest() {
+		
 	}
 
 }
