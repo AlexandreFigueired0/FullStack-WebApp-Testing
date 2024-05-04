@@ -7,6 +7,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import webapp.persistence.AddressFinder;
+import webapp.persistence.PersistenceException;
 import webapp.services.AddressesDTO;
 import webapp.services.ApplicationException;
 import webapp.services.CustomerService;
@@ -38,6 +40,10 @@ public class AddSaleDeliveryPageController extends PageController{
 			if(addr != null && sale != null) {
 				if (isInt(sdh, sale, "Invalid Sale Id") && isInt(sdh, addr, "Invalid Address Id")) {
 					int addr_id = intValue(addr);
+					// Added by tester -> its needed to check if the address id is a valid address
+					new AddressFinder().getAddressById(addr_id);
+					//						and if its an address from the customer inserting the delivery???
+					//
 					int sale_id = intValue(sale);
 					int customerVat = ss.addSaleDelivery(sale_id, addr_id);
 					SalesDeliveryDTO sdd = ss.getSalesDeliveryByVat(customerVat);
@@ -53,7 +59,7 @@ public class AddSaleDeliveryPageController extends PageController{
 				ssh.fillWithSales(ssd.sales);
 				request.getRequestDispatcher("addSaleDelivery.jsp").forward(request, response);
 			}
-		} catch (ApplicationException e) {
+		} catch (ApplicationException | PersistenceException e) {
 			sdh.addMessage("It was not possible to fulfill the request: " + e.getMessage());
 			request.getRequestDispatcher("CustomerError.jsp").forward(request, response); 
 		}

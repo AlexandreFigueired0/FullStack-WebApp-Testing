@@ -24,6 +24,13 @@ public class AddressRowDataGateway{
 	public AddressRowDataGateway() {
 		
 	}
+	
+	public AddressRowDataGateway (int id, String address, int customerVat) {
+		this.id = id;
+		this.address = address;
+		this.customerVat = customerVat;
+		
+	}
 		
 	public AddressRowDataGateway (String address, int customerVat) {
 		this.address = address;
@@ -34,12 +41,14 @@ public class AddressRowDataGateway{
 	public AddressRowDataGateway(ResultSet rs) throws RecordNotFoundException {
 		try {
 			fillAttributes(rs.getString("address"), 
-					rs.getInt("customerVat"));
+					rs.getInt("customer_Vat")); // Tester changed. Previously was customerVat
 			this.id = rs.getInt("id");
 		} catch (SQLException e) {
-			throw new RecordNotFoundException ("Customer does not exist", e);
+			throw new RecordNotFoundException ("Address does not exist", e);
 		}
 	}
+	
+
 	
 	private void fillAttributes(String address, int customerVat) {
 		this.address = address;

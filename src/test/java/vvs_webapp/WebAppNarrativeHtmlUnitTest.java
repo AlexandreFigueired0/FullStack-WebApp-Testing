@@ -233,6 +233,7 @@ public class WebAppNarrativeHtmlUnitTest {
 		return submit.click();
 	}
 
+	// e)
 	@Test
 	public void createCustomerThenSaleThenDeliveryAndShowDeliveryTest() throws IOException {
 		final String VAT = "123456789";
@@ -346,11 +347,11 @@ public class WebAppNarrativeHtmlUnitTest {
 		addressIdInput.setValueAttribute(ADDRESS_ID);
 		HtmlInput saleIdInput = createDeliveryForm.getInputByName("sale_id");
 		saleIdInput.setValueAttribute(SALE_ID);
-		submit = createDeliveryForm.getInputByValue("Insert");
-		final HtmlPage finalPage = submit.click();
+		HtmlInput finalSubmit = createDeliveryForm.getInputByValue("Insert");
 		
 		////////// IF THIS HAPPENS THE ASSERTION SHOULD FAIL
 		assertThrows(Exception.class, () ->{
+			HtmlPage finalPage = finalSubmit.click();
 			// 3 Verify the delivery is there
 			HtmlTable deliveryTable = (HtmlTable) finalPage.getByXPath("//table").get(0);
 			HtmlTableRow latestDelivery = deliveryTable.getRow(deliveryTable.getRowCount() -1);
