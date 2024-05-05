@@ -51,7 +51,7 @@ public class WebAppNarrativeHtmlUnitTest {
 	// a)
 	@Test
 	public void insertTwoAddressesInSameClientTest() throws IOException {
-		final String VAT = "197672337"; // vat of exisiting customer
+		final String VAT = "197672337"; // TODO: vat of exisiting customer?
 		
 		// 1. Get n of rows in the addresses table
 		HtmlAnchor getCustomerByVatLink = page.getAnchorByHref("getCustomerByVAT.html");
@@ -94,9 +94,32 @@ public class WebAppNarrativeHtmlUnitTest {
 		//Assert num of rows increased by 2
 		assertEquals(nRowsBefore + 2, addressesTable.getRowCount());
 		
-		//TODO: /////////////////////// REVERT /////////////////////////
+		///////////////////////// REVERT /////////////////////////
+		for(int i = 0; i < 2; i++) {
+			reportPage = removeAddress(VAT,ADDRESS+i, DOOR+i, POSTAL_CODE+i, LOCALITY+i);
+		}
+		
+		// TODO: assert de que foi tudo revereted?
 	}
 	
+	private HtmlPage removeAddress(String vat, String address, String door, String postalCode, String locality) throws IOException {
+		HtmlAnchor removeAddressOfCustomerLink = page.getAnchorByHref("removeCustomerAddress.html");
+		HtmlPage nextPage = (HtmlPage) removeAddressOfCustomerLink.openLinkInNewWindow();
+		HtmlForm removeAdressForms = nextPage.getForms().get(0);
+		HtmlInput vatInput = removeAdressForms.getInputByName("vat");
+		vatInput.setValueAttribute(vat);
+		HtmlInput addressInput = removeAdressForms.getInputByName("address");
+		HtmlInput doorInput = removeAdressForms.getInputByName("door");
+		HtmlInput postalCodeInput = removeAdressForms.getInputByName("postalCode");
+		HtmlInput localityInput = removeAdressForms.getInputByName("locality");
+		HtmlInput submit = removeAdressForms.getInputByName("submit");
+		addressInput.setValueAttribute(address);
+		doorInput.setValueAttribute(door);
+		postalCodeInput.setValueAttribute(postalCode);
+		localityInput.setValueAttribute(locality);
+		return submit.click();
+	}
+
 	private HtmlPage createAdress(String vat, String address, String door, String postalCode, String locality) throws IOException {
 		HtmlAnchor addAddressToCustomerLink = page.getAnchorByHref("addAddressToCustomer.html");
 		HtmlPage nextPage = (HtmlPage) addAddressToCustomerLink.openLinkInNewWindow();

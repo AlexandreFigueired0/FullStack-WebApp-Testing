@@ -71,6 +71,22 @@ public enum CustomerService {
 		}
 	}
 	
+
+	////////////////// Added by tester to remove addresses created in tests ////////////////////////////////////////////////////////////////
+	public void removeAddressOfCustomer(int customerVat, String addr) throws ApplicationException {
+		if (!isValidVAT (customerVat))
+			throw new ApplicationException ("Invalid VAT number: " + customerVat);
+		else try {
+			AddressRowDataGateway address = new AddressRowDataGateway(addr, customerVat);
+			address.delete();
+		} catch (PersistenceException e) {
+				throw new ApplicationException ("Can't remmove the address " + addr + "To customer with vat number " + customerVat + ".", e);
+		}
+		
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	
 	public AddressesDTO getAllAddresses(int customerVat) throws ApplicationException {
 		try {
 			List<AddressRowDataGateway> addrs = new AddressRowDataGateway().getCustomerAddresses(customerVat);

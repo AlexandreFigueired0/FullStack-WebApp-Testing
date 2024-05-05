@@ -94,6 +94,26 @@ public class AddressRowDataGateway{
 		}
 	}
 	
+	////////////////////// Added by tester to remove addresses created in tests ////////////////////
+	private static final String DELETE_ADDRESS_SQL = 
+			"delete from address " +
+					"where customer_Vat = ? and address = ?";
+	
+	
+	public void delete() throws PersistenceException {
+		try (PreparedStatement statement = DataSource.INSTANCE.prepare(DELETE_ADDRESS_SQL)){
+			// set statement arguments
+			statement.setInt(1, customerVat);
+			statement.setString(2, address);
+			// executes SQL
+			statement.executeUpdate();
+		}  catch (SQLException e) {
+			throw new PersistenceException("Internal error!", e);
+		}
+		
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * The select address by customer id SQL statement
 	 */
@@ -137,5 +157,7 @@ public class AddressRowDataGateway{
 			throw new RecordNotFoundException ("Address does not exist", e);
 		}
 	}
+
+
 	
 }

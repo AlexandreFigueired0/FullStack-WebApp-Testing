@@ -17,7 +17,6 @@ public class AddressFinder {
 			statement.setInt(1, id);
 			try (ResultSet rs = statement.executeQuery()) {
 				rs.next();
-				System.out.println("anbtes do return");
 				return new AddressRowDataGateway(rs);
 			}
 		} catch (SQLException e) {
