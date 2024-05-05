@@ -43,13 +43,12 @@ public class SaleRowDataGateway {
 
 	// 1. constructors
 
-	//FOR TEST PURPOSE ONLY
-	//public CustomerRowDataGateway(int id, int vat, String designation, int phoneNumber) {
-		//this.id = id;
-		//this.vat = vat;
-		//this.designation = designation;
-		//this.phoneNumber = phoneNumber;
-	//}
+	//////////////// Created by tester ////////////////////////////
+	public SaleRowDataGateway(int id, int customerVat) {
+		this.id = id;
+		this.customerVat = customerVat;
+	}
+	/////////////////////////////////////////////////////////////
 	
 	public SaleRowDataGateway(int customerVat, Date date) {
 		this.data = new java.sql.Date(date.getTime());
@@ -137,6 +136,24 @@ public class SaleRowDataGateway {
 			throw new PersistenceException("Internal error!", e);
 		}
 	}
+	
+	///////////////////////// Added by tester to remove sales created in tests ///////////////////////////////////////
+	private static final String DELETE_SALE_SQL = 
+			"delete from sale " + 
+					"where id = ? and customer_vat = ?";
+	public void delete() throws PersistenceException {
+		try (PreparedStatement statement = DataSource.INSTANCE.prepare(DELETE_SALE_SQL)){
+			// set statement arguments
+			statement.setInt(1, id);
+			statement.setInt(2, customerVat);
+			// executes SQL
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new PersistenceException("Internal error!", e);
+		}
+		
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
 	private static SaleRowDataGateway loadSale(ResultSet rs) throws RecordNotFoundException{
@@ -227,6 +244,8 @@ public class SaleRowDataGateway {
 			throw new PersistenceException("Internal error updating customer " + id + ".", e);
 		}
 	}
+
+
 	
 		
 }

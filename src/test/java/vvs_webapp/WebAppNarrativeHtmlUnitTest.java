@@ -1,23 +1,20 @@
 package vvs_webapp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.*;
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.*;
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
-
-import webapp.CreateDatabase;
-
-import java.sql.SQLException;
-import java.io.*;
-import java.util.*;
 
 public class WebAppNarrativeHtmlUnitTest {
 
@@ -241,10 +238,25 @@ public class WebAppNarrativeHtmlUnitTest {
 		assertEquals("C", cells.get(3).asText());
 		assertEquals(VAT, cells.get(4).asText());
 		
-		// TODO: Nao tenho como apagar para reverter
+		////////////////////////// REVERT ///////////////////////////////////////
+		reportPage = removeSale(VAT,SALE_ID);
 		
 	}
 	
+	private HtmlPage removeSale(String vat, String saleId) throws IOException {
+		HtmlAnchor removeSaleLink = page.getAnchorByHref("removeSale.html");
+		HtmlPage nextPage = (HtmlPage) removeSaleLink.openLinkInNewWindow();
+		HtmlForm removeSaleForm = nextPage.getForms().get(0);
+		
+		HtmlInput vatInput = removeSaleForm.getInputByName("vat");
+		vatInput.setValueAttribute(vat);
+		HtmlInput saleIdInput = removeSaleForm.getInputByName("id");
+		saleIdInput.setValueAttribute(saleId);
+		
+		HtmlInput submit = removeSaleForm.getInputByName("submit");
+		return submit.click();
+	}
+
 	private HtmlPage createSale(String vat) throws IOException {
 		HtmlAnchor addSaleLink = page.getAnchorByHref("addSale.html");
 		HtmlPage nextPage = (HtmlPage) addSaleLink.openLinkInNewWindow();

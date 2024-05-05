@@ -14,6 +14,7 @@ import webapp.services.CustomerService;
 
 /**
  * Created by tester to remove addresses created in tests
+ * @author Alexandre Figueiredo fc57099
  * 
  */
 @WebServlet("/RemoveAddressPageController")

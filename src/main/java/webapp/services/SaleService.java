@@ -62,6 +62,24 @@ public enum SaleService {
 		}
 	}
 	
+	////////////////// Added by tester to remove sales created in tests //////////////////////////////////////////
+	public void removeSale(int customerVat, int saleId) throws ApplicationException {
+		try {
+			List<SaleDTO> customerSales = getSaleByCustomerVat(customerVat).sales;
+			if(customerSales.stream().noneMatch( s -> s.id == saleId)) {
+				throw new ApplicationException("Customer with vat: " + customerVat + ", doesn't have a sale with id: " + saleId);
+			}
+			
+			SaleRowDataGateway sale = new SaleRowDataGateway(saleId, customerVat);
+			sale.delete();
+			
+		} catch (PersistenceException e) {
+				throw new ApplicationException ("Can't remve sale with id:" + saleId + " from customer with vat number " + customerVat + ".", e);
+		}
+		
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public void updateSale(int id) throws ApplicationException {
 		try {
 			SaleRowDataGateway sale = new SaleRowDataGateway().getSaleById(id);
@@ -132,4 +150,6 @@ public enum SaleService {
 			checkDigitCalc = 0;
 		return checkDigit == checkDigitCalc;
 	}
+
+
 }
