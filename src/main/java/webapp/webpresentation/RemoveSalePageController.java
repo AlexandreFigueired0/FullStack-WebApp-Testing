@@ -26,7 +26,6 @@ public class RemoveSalePageController extends PageController{
 	
 		SalesHelper sh = new SalesHelper();
 		request.setAttribute("salesHelper", sh);
-		System.out.println("ola");
 		try{
 			String id = request.getParameter("id");
 			String vat = request.getParameter("vat");

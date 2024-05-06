@@ -16,6 +16,15 @@ import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 
+/**
+ * Test set for testing the narratives in 2. of the assignment.
+ * To simulate the narratives, it's being used the HtmlUnit library.~
+ * When a narrative is finished, it's performed a reverse of the operations done 
+ * in the narrative, to not change the state of the system.
+ * 
+ * @author Alexandre Figueiredo fc57099
+ * 
+ */
 public class WebAppNarrativeHtmlUnitTest {
 
 	private static final String APPLICATION_URL = "http://localhost:8080/VVS_webappdemo/";
@@ -45,7 +54,15 @@ public class WebAppNarrativeHtmlUnitTest {
 		webClient.close();
 	}
 
-	// a)
+	/**
+	 * Test for the narrative  2. a).
+	 * Creates two new addresses to an existing client (client with vat=197672337)
+	 * Asserts if, after the addresses are inserted, there are 2 new rows in the addresses table
+	 * in the page with the client details, with the correct values.
+	 * In the end the two addresses inserted are removed.
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void insertTwoAddressesInSameClientTest() throws IOException {
 		final String VAT = "197672337"; // TODO: vat of exisiting customer?
@@ -78,14 +95,15 @@ public class WebAppNarrativeHtmlUnitTest {
 		}
 		
 		HtmlTable addressesTable = (HtmlTable) reportPage.getByXPath("//table").get(0);
-		String textAddressesTable = addressesTable.asText();
+		List<HtmlTableRow> rows = addressesTable.getRows();
 		
 		// Assert addresses were inserted
 		for(int i = 0; i < 2; i++) {
-			assertTrue(textAddressesTable.contains(ADDRESS+i));
-			assertTrue(textAddressesTable.contains(DOOR+i));
-			assertTrue(textAddressesTable.contains(POSTAL_CODE+i));
-			assertTrue(textAddressesTable.contains(LOCALITY+i));
+			List<HtmlTableCell> cells = rows.get(rows.size() -2 + i).getCells();
+			assertEquals(cells.get(0).asText(), ADDRESS+i);
+			assertEquals(cells.get(1).asText(), DOOR+i);
+			assertEquals(cells.get(2).asText(), POSTAL_CODE+i);
+			assertEquals(cells.get(3).asText(), LOCALITY+i);
 		}
 		
 		//Assert num of rows increased by 2
@@ -135,7 +153,15 @@ public class WebAppNarrativeHtmlUnitTest {
 		return submit.click();
 	}
 
-	// b)
+	/**
+	 * Test for the narrative  2. b).
+	 * Creates two new customers.
+	 * Then goes to List all customers page and asserts if, after the customers are inserted,
+	 * there are 2 new rows in the customers table, with the added customers
+	 * In the end the two customers inserted are removed
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void insertTwoCustomersAndCheckInListAllCustomersTest() throws IOException {
 		final String VAT1 = "123456789";
@@ -154,16 +180,19 @@ public class WebAppNarrativeHtmlUnitTest {
 		// 2. Check List All Customers
 		HtmlAnchor listAllCustomersLink = page.getAnchorByHref("GetAllCustomersPageController");
 		HtmlPage nextPage = (HtmlPage) listAllCustomersLink.openLinkInNewWindow();
-		String textAllCustomers = nextPage.asText();
+		HtmlTable customersTable = (HtmlTable) nextPage.getByXPath("//table").get(0);
+		List<HtmlTableRow> rows = customersTable.getRows();
 		
-		assertTrue(textAllCustomers.contains(VAT1));
-		assertTrue(textAllCustomers.contains(DESIG1));
-		assertTrue(textAllCustomers.contains(PHONE1));
+		List<HtmlTableCell> cells1 = rows.get(rows.size() -2 ).getCells();
+		List<HtmlTableCell> cells2 = rows.get(rows.size() -1 ).getCells();
 		
-		assertTrue(textAllCustomers.contains(VAT2));
-		assertTrue(textAllCustomers.contains(DESIG2));
-		assertTrue(textAllCustomers.contains(PHONE2));
+		assertEquals(cells1.get(0).asText(), DESIG1);
+		assertEquals(cells1.get(1).asText(), PHONE1);
+		assertEquals(cells1.get(2).asText(), VAT1);
 		
+		assertEquals(cells2.get(0).asText(), DESIG2);
+		assertEquals(cells2.get(1).asText(), PHONE2);
+		assertEquals(cells2.get(2).asText(), VAT2);
 		
 		///////////////////////////// REVERT //////////////////////////////////////////
 		reportPage = removeCustomer(VAT1);
@@ -200,7 +229,16 @@ public class WebAppNarrativeHtmlUnitTest {
 		
 	}
 
-	//c) e d)
+	/**
+	 * Test for the narratives  2. c) and d).
+	 * For an existing client (vat = 197672337), creates a sale, 
+	 * checks if there is an open sale for the client, and closes the sale,
+	 *  also checking if in the end the respective sale is closed
+	 *  
+	 * In the end the sale created is removed.
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void openSaleForClientAndCloseItTest() throws IOException {
 		final String VAT = "197672337"; // vat of exisiting customer
@@ -268,6 +306,16 @@ public class WebAppNarrativeHtmlUnitTest {
 		return submit.click();
 	}
 
+	/**
+	 * Test for the narrative  2. e).
+	 * Creates a customer, a sale for that customer, and a delivery for that sale of the customer.
+	 * Checks for all if the information is correct in all intermediate pages: after inserting
+	 * the client, after creating the sale, and after creating the delivery
+	 * 
+	 * In the end the delivery, sale and customer created are deleted
+	 * 
+	 * @throws IOException
+	 */
 	// e)
 	@Test
 	public void createCustomerThenSaleThenDeliveryAndShowDeliveryTest() throws IOException {
@@ -350,9 +398,21 @@ public class WebAppNarrativeHtmlUnitTest {
 		//////////////////////// REVERT ////////////////////////////////
 	}
 	
-	// Test designed to test a possible problem detected while manually testing the app in a browser
-	// Problem: Creating a delivery with a non-existent address id
-	// Result: Test failed
+	/**
+	 * Test for the narrative  2. e), but inserting incorrect address id.
+	 * Test designed to test a possible problem detected while manually testing the app in a browser
+	 * the flow is the same as createCustomerThenSaleThenDeliveryAndShowDeliveryTest, but it uses an
+	 * existing client and when creating a delivery, the address id field is filled with an address id
+	 * that doesn't exist.
+	 * 
+	 * Result: Test failed
+	 * Fix: Change SUT, to verify that the address id inserted corresponds to an address of the customer.
+	 * After the fix, the test now passes
+	 * 
+	 * In the end the delivery and sale created are deleted
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void createSaleAndDeliveryWithWrongAddress() throws IOException {
 		final String VAT = "197672337"; // vat of exisiting customer
