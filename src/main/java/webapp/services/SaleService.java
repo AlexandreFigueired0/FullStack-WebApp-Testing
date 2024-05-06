@@ -117,6 +117,19 @@ public enum SaleService {
 		}
 	}
 	
+	//////////////////////// Added by tester to remove deliveries created in tests //////////////////////
+	public void removeDelivery(int customerVat, int deliveryId) throws ApplicationException {
+		try {
+			SaleDeliveryRowDataGateway sale = new SaleDeliveryRowDataGateway(deliveryId, customerVat);
+			sale.delete();
+			
+		} catch (PersistenceException e) {
+				throw new ApplicationException ("Can't delete delivery with id: " + deliveryId + ", from customer with vat: " + customerVat, e);
+		}
+		
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Checks if a VAT number is valid.
 	 * 
@@ -150,6 +163,8 @@ public enum SaleService {
 			checkDigitCalc = 0;
 		return checkDigit == checkDigitCalc;
 	}
+
+
 
 
 }

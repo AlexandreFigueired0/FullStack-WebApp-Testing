@@ -52,6 +52,19 @@ public class SaleDeliveryRowDataGateway {
 		this.customer_vat = customer_vat;
 		
 	}
+	/**
+	 * Created by tester, to remove deliveries created in tests
+	 * 
+	 * @param customer_vat: Vat of the customer that created the delivery
+	 * @param id: Id of the delivery to delete
+	 */
+	public SaleDeliveryRowDataGateway (int customerVat, int id) {
+		this.customer_vat = customerVat;
+		this.id = id;
+		
+	}
+	///////////////////////////////////////////////////////////////////////
+	
 	public SaleDeliveryRowDataGateway () {
 	}
 	
@@ -108,7 +121,28 @@ public class SaleDeliveryRowDataGateway {
 		}  catch (SQLException e){
 			throw new PersistenceException("Internal error!", e);
 		}
-	}	
+	}
+	
+	///////////////////// Added by the tester to remove deliveries created in tests ////////////////////////
+	private static final String DELETE_SALEDELIVERY_SQL = 
+			"delete from saledelivery " +
+			"where id = ? and customer_vat = ?";
+	
+	public void delete() throws PersistenceException {
+		try (PreparedStatement statement = DataSource.INSTANCE.prepare(DELETE_SALEDELIVERY_SQL)){
+			// set statement arguments
+			statement.setInt(1, id);
+			statement.setInt(2, customer_vat);
+			// executes SQL
+			statement.executeUpdate();
+			
+			
+		}  catch (SQLException e){
+			throw new PersistenceException("Internal error!", e);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * The select delivery by customer id SQL statement
