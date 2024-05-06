@@ -97,7 +97,6 @@ public class InsertTwoNewCustomersNarrativeTest {
 		///////////////////////////// REVERT //////////////////////////////////////////
 		reportPage = HtmlUnitUtils.removeCustomer(page,VAT1);
 		reportPage = HtmlUnitUtils.removeCustomer(page,VAT2);
-		// TODO: Assert para garantir que apaguei os customers?
 
 	}
 

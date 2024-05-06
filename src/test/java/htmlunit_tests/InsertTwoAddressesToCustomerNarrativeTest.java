@@ -66,7 +66,7 @@ public class InsertTwoAddressesToCustomerNarrativeTest {
 	 */
 	@Test
 	public void insertTwoAddressesInSameClientTest() throws IOException {
-		final String VAT = "197672337"; // TODO: vat of exisiting customer?
+		final String VAT = "197672337";
 
 		// 1. Get n of rows in the addresses table
 		HtmlAnchor getCustomerByVatLink = page.getAnchorByHref("getCustomerByVAT.html");
@@ -115,7 +115,6 @@ public class InsertTwoAddressesToCustomerNarrativeTest {
 			reportPage = HtmlUnitUtils.removeAddress(page,VAT,ADDRESS+i, DOOR+i, POSTAL_CODE+i, LOCALITY+i);
 		}
 
-		// TODO: assert de que foi tudo revereted?
 	}
 
 	

@@ -136,7 +136,6 @@ public class SaleDeliveryRowDataGateway {
 			// executes SQL
 			statement.executeUpdate();
 			
-			
 		}  catch (SQLException e){
 			throw new PersistenceException("Internal error!", e);
 		}

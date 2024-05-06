@@ -75,11 +75,6 @@ public class CreateSaleNarrativeTest {
 		// c) Create a Sale for the client
 		HtmlPage reportPage =  HtmlUnitUtils.createSale(page,VAT);
 
-		// TODO: se ja tiver uma aberta antes do teste, este teste nao serve para nada
-		//		assertTrue(textReportPage.contains("O"));
-
-		// TODO: verificar que a tabela tem mais uma row?
-		// TODO:  a ultima row que e a que metemos, estah aberta?
 		HtmlTable salesTable = (HtmlTable) reportPage.getByXPath("//table").get(0);
 		HtmlTableRow latestSale = salesTable.getRow(salesTable.getRowCount() - 1);
 		List<HtmlTableCell> cells = latestSale.getCells();

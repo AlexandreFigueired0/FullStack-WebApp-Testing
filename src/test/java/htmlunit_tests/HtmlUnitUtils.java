@@ -20,12 +20,12 @@ public class HtmlUnitUtils {
 	 * of the customer identified with the given vat
 	 * 
 	 * @param page - Starting page of the web_app (index.html)
-	 * @param vat - vat of the customer that has the address to remove
-	 * @param address
-	 * @param door
-	 * @param postalCode
-	 * @param locality
-	 * @return the page that the user is redirected after removing an address, in this case, the customer that
+	 * @param vat - vat of the customer to add the address
+	 * @param address - address component of the address to create
+	 * @param door - door component of the address to create
+	 * @param postalCode - postal code component of the address to create
+	 * @param locality - locality component of the address to create
+	 * @return the page that the user is redirected after removing an address, in this case to the customer that
 	 * the given vat details
 	 * 			
 	 * @throws IOException
@@ -53,12 +53,12 @@ public class HtmlUnitUtils {
 	 * for the customer identified with the given vat
 	 * 
 	 * @param page - Starting page of the web_app (index.html)
-	 * @param vat - vat of the customer to add the address
-	 * @param address
-	 * @param door
-	 * @param postalCode
-	 * @param locality
-	 * @return the page that the user is redirected after adding an address, in this case, the customer that
+	 * @param vat - vat of the customer that created the address
+	 * @param address - address component of the address to remove
+	 * @param door - door component of the address to remove
+	 * @param postalCode - postal code component of the address to remove
+	 * @param locality - locality component of the address to remove
+	 * @return the page that the user is redirected after adding an address, in this case to the customer that
 	 * the given vat details
 	 * @return
 	 * @throws IOException
@@ -83,10 +83,12 @@ public class HtmlUnitUtils {
 	
 
 	/**
+	 * Removes the customer identified by the given vat
 	 * 
 	 * @param page - Starting page of the web_app (index.html)
 	 * @param vat - Vat of the customer to remove
 	 * @return The page the user is redirected to after removing a customer, in this case
+	 * to the page to remove a customer (with the updated content)
 	 * @throws IOException
 	 */
 	public static HtmlPage removeCustomer(HtmlPage page, String vat) throws IOException {
@@ -101,6 +103,16 @@ public class HtmlUnitUtils {
 		return submit.click();
 	}
 	
+	/**
+	 * Creates a customer with the given vat, designation and phone
+	 * 
+	 * @param page - Starting page of the web_app (index.html)
+	 * @param vat - vat of the new customer
+	 * @param designation - designation of the new customer
+	 * @param phone - phone of the new customer
+	 * @return A page where it's displayed the created customer's details
+	 * @throws IOException
+	 */
 	public static HtmlPage createCustomer(HtmlPage page, String vat, String designation, String phone) throws IOException {
 		HtmlAnchor addCustomerLink = page.getAnchorByHref("addCustomer.html");
 		HtmlPage nextPage = (HtmlPage) addCustomerLink.openLinkInNewWindow();
@@ -118,6 +130,16 @@ public class HtmlUnitUtils {
 	}
 	
 
+	/**
+	 * Removes the sale with the given saleId, 
+	 * from the customer that has the given vat
+	 * 
+	 * @param page - Starting page of the web_app (index.html)
+	 * @param vat - vat of the customer that created the sale
+	 * @param saleId - id of the sale to remove
+	 * @return The page that shows the sales created by the customer with the given vat
+	 * @throws IOException
+	 */
 	public static HtmlPage removeSale(HtmlPage page, String vat, String saleId) throws IOException {
 		HtmlAnchor removeSaleLink = page.getAnchorByHref("removeSale.html");
 		HtmlPage nextPage = (HtmlPage) removeSaleLink.openLinkInNewWindow();
@@ -132,6 +154,14 @@ public class HtmlUnitUtils {
 		return submit.click();
 	}
 	
+	/**
+	 * Creates a sale for the customer with the given vat
+	 * 
+	 * @param page - Starting page of the web_app (index.html)
+	 * @param vat - vat of the customer to create the sale
+	 * @return The page that shows the sales created by the customer with the given vat
+	 * @throws IOException
+	 */
 	public static HtmlPage createSale(HtmlPage page, String vat) throws IOException {
 		HtmlAnchor addSaleLink = page.getAnchorByHref("addSale.html");
 		HtmlPage nextPage = (HtmlPage) addSaleLink.openLinkInNewWindow();
@@ -143,9 +173,28 @@ public class HtmlUnitUtils {
 		return submit.click();
 	}
 	
-	public static HtmlPage removeDelivery(HtmlPage page, String deliveryID, String customerVat) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Removes the delivery with the given deliveryId,
+	 * from the customer with the given customerVat
+	 * 
+	 * @param page - Starting page of the web_app (index.html)
+	 * @param deliveryId - id of the delivery to remove
+	 * @param customerVat - vat of the customer that created the sale
+	 * @return - To the page that shows the deliveries created by the customer
+	 * @throws IOException
+	 */
+	public static HtmlPage removeDelivery(HtmlPage page, String deliveryId, String customerVat) throws IOException {
+		HtmlAnchor removeDeliveryLink = page.getAnchorByHref("removeDelivery.html");
+		HtmlPage nextPage = (HtmlPage) removeDeliveryLink.openLinkInNewWindow();
+		HtmlForm removeDeliveryForm = nextPage.getForms().get(0);
+
+		HtmlInput vatInput = removeDeliveryForm.getInputByName("vat");
+		vatInput.setValueAttribute(customerVat);
+		HtmlInput deliveryIdInput = removeDeliveryForm.getInputByName("delivery_id");
+		deliveryIdInput.setValueAttribute(deliveryId);
+
+		HtmlInput submit = removeDeliveryForm.getInputByName("submit");
+		return submit.click();
 	}
 	
 }

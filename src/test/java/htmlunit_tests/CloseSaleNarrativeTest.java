@@ -21,7 +21,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
 /**
- * Class to test the narrative 2. c) of the vvs2 assignment, using the HtmlUnit library
+ * Class to test the narrative 2. d) of the vvs2 assignment, using the HtmlUnit library
  * When a test is finishes, it's performed a reverse of the operations done 
  * in the test, to not change the state of the system.
  * 

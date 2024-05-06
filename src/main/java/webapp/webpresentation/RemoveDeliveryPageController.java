@@ -16,7 +16,7 @@ import webapp.services.SaleService;
 import webapp.services.SalesDTO;
 import webapp.services.SalesDeliveryDTO;
 
-@WebServlet("/AddSaleDeliveryPageController")
+@WebServlet("/RemoveDeliveryPageController")
 public class RemoveDeliveryPageController extends PageController{
 	private static final long serialVersionUID = 1L;
 
@@ -46,14 +46,7 @@ public class RemoveDeliveryPageController extends PageController{
 					request.getRequestDispatcher("SalesDeliveryInfo.jsp").forward(request, response);
 				}
 			}
-			if(isInt(ash, vat, "Invalid VAT number")) {
-				int vatNumber = intValue(vat);
-				AddressesDTO asd = cs.getAllAddresses(vatNumber);
-				ash.fillWithAddresses(asd.addrs);
-				SalesDTO ssd = ss.getSaleByCustomerVat(vatNumber);
-				ssh.fillWithSales(ssd.sales);
-				request.getRequestDispatcher("addSaleDelivery.jsp").forward(request, response);
-			}
+
 		} catch (ApplicationException e) {
 			sdh.addMessage("It was not possible to fulfill the request: " + e.getMessage());
 			request.getRequestDispatcher("CustomerError.jsp").forward(request, response); 

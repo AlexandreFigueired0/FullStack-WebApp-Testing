@@ -63,6 +63,14 @@ public enum SaleService {
 	}
 	
 	////////////////// Added by tester to remove sales created in tests //////////////////////////////////////////
+	/**
+	 * Method added by tester to remove Sales, created in tests
+	 * 
+	 * @param customerVat - vat of the customer that has the sale to remove
+	 * @param saleId - id of the sale to remove
+	 * @throws ApplicationException
+	 * 
+	 */
 	public void removeSale(int customerVat, int saleId) throws ApplicationException {
 		try {
 			List<SaleDTO> customerSales = getSaleByCustomerVat(customerVat).sales;
@@ -118,9 +126,20 @@ public enum SaleService {
 	}
 	
 	//////////////////////// Added by tester to remove deliveries created in tests //////////////////////
+	/**
+	 * Method added by tester to remove deliveries, created in tests
+	 * 
+	 * @param customerVat - vat of the customer that created this delivery
+	 * @param deliveryId - id of the delivery to remove
+	 * @throws ApplicationException
+	 */
 	public void removeDelivery(int customerVat, int deliveryId) throws ApplicationException {
 		try {
-			SaleDeliveryRowDataGateway sale = new SaleDeliveryRowDataGateway(deliveryId, customerVat);
+			List<SaleDeliveryDTO> customerDeliveries = getSalesDeliveryByVat(customerVat).sales_delivery;
+			if(customerDeliveries.stream().noneMatch( s -> s.id == deliveryId)) {
+				throw new ApplicationException("Customer with vat: " + customerVat + ", doesn't have a delivery with id: " + deliveryId);
+			}
+			SaleDeliveryRowDataGateway sale = new SaleDeliveryRowDataGateway(customerVat, deliveryId);
 			sale.delete();
 			
 		} catch (PersistenceException e) {

@@ -167,10 +167,11 @@ public class CreateDeliveryNarrativeTest {
 	 * 
 	 * In the end the delivery and sale created are deleted
 	 * 
+	 * @requires customer with vat = 197672337
 	 * @throws IOException
 	 */
 	@Test
-	public void createSaleAndDeliveryWithWrongAddress() throws IOException {
+	public void createDeliveryWithWrongAddress() throws IOException {
 		final String VAT = "197672337"; // vat of exisiting customer
 
 		// 1 Create a Sale for the client

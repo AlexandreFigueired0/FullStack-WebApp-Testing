@@ -77,6 +77,10 @@ public enum CustomerService {
 		if (!isValidVAT (customerVat))
 			throw new ApplicationException ("Invalid VAT number: " + customerVat);
 		else try {
+			List<AddressDTO> customerDeliveries = getAllAddresses(customerVat).addrs;
+			if(customerDeliveries.stream().noneMatch( a -> a.address.equals(addr))) {
+				throw new ApplicationException("Customer with vat: " + customerVat + ", doesn't have an address lke: " + addr);
+			}
 			AddressRowDataGateway address = new AddressRowDataGateway(addr, customerVat);
 			address.delete();
 		} catch (PersistenceException e) {
