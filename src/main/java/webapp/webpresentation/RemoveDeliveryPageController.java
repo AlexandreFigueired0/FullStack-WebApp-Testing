@@ -16,10 +16,17 @@ import webapp.services.SaleService;
 import webapp.services.SalesDTO;
 import webapp.services.SalesDeliveryDTO;
 
+/**
+ * Created by tester to remove deliveries created in tests
+ * @author Alexandre Figueiredo fc57099
+ */
 @WebServlet("/RemoveDeliveryPageController")
 public class RemoveDeliveryPageController extends PageController{
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Processes request to remove a Delivery
+	 */
 	@Override
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		CustomerService cs = CustomerService.INSTANCE;

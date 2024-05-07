@@ -52,12 +52,7 @@ public class SaleDeliveryRowDataGateway {
 		this.customer_vat = customer_vat;
 		
 	}
-	/**
-	 * Created by tester, to remove deliveries created in tests
-	 * 
-	 * @param customer_vat: Vat of the customer that created the delivery
-	 * @param id: Id of the delivery to delete
-	 */
+	///////////////////// Created by tester ////////////////////////////////
 	public SaleDeliveryRowDataGateway (int customerVat, int id) {
 		this.customer_vat = customerVat;
 		this.id = id;
@@ -127,7 +122,11 @@ public class SaleDeliveryRowDataGateway {
 	private static final String DELETE_SALEDELIVERY_SQL = 
 			"delete from saledelivery " +
 			"where id = ? and customer_vat = ?";
-	
+	/**
+	 * Removes this address from the database
+	 * 
+	 * @throws PersistenceException
+	 */
 	public void delete() throws PersistenceException {
 		try (PreparedStatement statement = DataSource.INSTANCE.prepare(DELETE_SALEDELIVERY_SQL)){
 			// set statement arguments

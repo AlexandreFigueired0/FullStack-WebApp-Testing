@@ -73,6 +73,13 @@ public enum CustomerService {
 	
 
 	////////////////// Added by tester to remove addresses created in tests ////////////////////////////////////////////////////////////////
+	/**
+	 * Method added by tester to remove an Address from the customer with the given customerVat
+	 * 
+	 * @param customerVat - vat of the customer to remove the address
+	 * @param addr - address to remove
+	 * @throws ApplicationException
+	 */
 	public void removeAddressOfCustomer(int customerVat, String addr) throws ApplicationException {
 		if (!isValidVAT (customerVat))
 			throw new ApplicationException ("Invalid VAT number: " + customerVat);

@@ -38,6 +38,7 @@ public class AddressRowDataGateway{
 		
 	}
 	
+	///////////////////////////// Bug fixed in this constructor ///////////////////////////////////
 	public AddressRowDataGateway(ResultSet rs) throws RecordNotFoundException {
 		try {
 			fillAttributes(rs.getString("address"), 
@@ -99,7 +100,11 @@ public class AddressRowDataGateway{
 			"delete from address " +
 					"where customer_Vat = ? and address = ?";
 	
-	
+	/**
+	 * Removes this address from the database
+	 * 
+	 * @throws PersistenceException
+	 */
 	public void delete() throws PersistenceException {
 		try (PreparedStatement statement = DataSource.INSTANCE.prepare(DELETE_ADDRESS_SQL)){
 			// set statement arguments

@@ -19,6 +19,9 @@ import webapp.services.SalesDTO;
 public class RemoveSalePageController extends PageController{
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Processes request to remove a Sale
+	 */
 	@Override
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 

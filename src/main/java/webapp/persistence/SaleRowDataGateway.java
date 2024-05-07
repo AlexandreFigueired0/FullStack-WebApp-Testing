@@ -141,6 +141,11 @@ public class SaleRowDataGateway {
 	private static final String DELETE_SALE_SQL = 
 			"delete from sale " + 
 					"where id = ? and customer_vat = ?";
+	/**
+	 * Removes this sale from the database
+	 * 
+	 * @throws PersistenceException
+	 */
 	public void delete() throws PersistenceException {
 		try (PreparedStatement statement = DataSource.INSTANCE.prepare(DELETE_SALE_SQL)){
 			// set statement arguments

@@ -22,6 +22,9 @@ public class RemoveAddressPageController extends PageController {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Processes the request to remove an Address
+	 */
 	@Override
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		CustomerService cs = CustomerService.INSTANCE;        
