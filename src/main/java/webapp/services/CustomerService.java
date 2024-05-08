@@ -60,7 +60,7 @@ public enum CustomerService {
 	}
 	
 	public void addAddressToCustomer(int customerVat, String addr) throws ApplicationException {
-		if (!isValidVAT (customerVat))
+		if (!isValidVAT (customerVat)) 
 			throw new ApplicationException ("Invalid VAT number: " + customerVat);
 		else try {
 			AddressRowDataGateway address = new AddressRowDataGateway(addr, customerVat);
@@ -72,9 +72,10 @@ public enum CustomerService {
 	}
 	
 
-	////////////////// Added by tester to remove addresses created in tests ////////////////////////////////////////////////////////////////
+	//////////////////////////////////// Added by tester to remove addresses created in tests /////////////////////////////////////////////////////
 	/**
 	 * Method added by tester to remove an Address from the customer with the given customerVat
+	 * (here it was discovered that the addresses were stored in the BD with a bunch of ending spaces)
 	 * 
 	 * @param customerVat - vat of the customer to remove the address
 	 * @param addr - address to remove
@@ -86,6 +87,7 @@ public enum CustomerService {
 		else try {
 			List<AddressDTO> customerDeliveries = getAllAddresses(customerVat).addrs;
 			if(customerDeliveries.stream().noneMatch( a -> a.address.equals(addr))) {
+				
 				throw new ApplicationException("Customer with vat: " + customerVat + ", doesn't have an address lke: " + addr);
 			}
 			AddressRowDataGateway address = new AddressRowDataGateway(addr, customerVat);

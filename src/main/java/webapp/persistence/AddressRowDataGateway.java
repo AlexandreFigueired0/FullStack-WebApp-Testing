@@ -27,13 +27,17 @@ public class AddressRowDataGateway{
 	
 	public AddressRowDataGateway (int id, String address, int customerVat) {
 		this.id = id;
-		this.address = address;
+		// MODIFIED BY TESTER: added the .trim()method, to ensure 
+		// strings don't have useless end spaces at the beginning/end
+		this.address = address.trim();
 		this.customerVat = customerVat;
 		
 	}
 		
 	public AddressRowDataGateway (String address, int customerVat) {
-		this.address = address;
+		// MODIFIED BY TESTER: added the .trim()method, to ensure 
+		// strings don't have useless end spaces at the beginning/end
+		this.address = address.trim();
 		this.customerVat = customerVat;
 		
 	}
@@ -52,7 +56,9 @@ public class AddressRowDataGateway{
 
 	
 	private void fillAttributes(String address, int customerVat) {
-		this.address = address;
+		// MODIFIED BY TESTER: added the .trim()method, to ensure 
+		// strings don't have useless end spaces at the beginning/end
+		this.address = address.trim(); 
 		this.customerVat = customerVat;
 	}
 		
