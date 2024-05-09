@@ -33,8 +33,13 @@ public enum CustomerService {
 	}
 	
 	public void addCustomer(int vat, String designation, int phoneNumber) throws ApplicationException {
-		if (!isValidVAT (vat))
+		if (!isValidVAT (vat) ) 
 			throw new ApplicationException ("Invalid VAT number: " + vat);
+		///////////////////////// MODIFIED BY TESTER: phone number verification added //////////////////////////
+		else if (!isValidPhoneNumber(phoneNumber)) {
+			throw new ApplicationException ("Invalid phone number: " + phoneNumber);
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		else try {
 			CustomerRowDataGateway customer = new CustomerRowDataGateway(vat, designation, phoneNumber);
 			customer.insert();
@@ -44,6 +49,18 @@ public enum CustomerService {
 		}
 	}
 	
+	/**
+	 * Mehtod created by tester.
+	 * A valid phone number must be positive.
+	 * There could be other rules for verifying a phone number. The requisites must be checked for this
+	 * 
+	 * @param phoneNumber - the phone number to verify
+	 * @return true if this is a valid phone number, false otherwise
+	 */
+	private boolean isValidPhoneNumber(int phoneNumber) {
+		return phoneNumber >= 0;
+	}
+
 	public CustomersDTO getAllCustomers() throws ApplicationException {
 		try {
 			List<CustomerRowDataGateway> customers = new CustomerRowDataGateway().getAllCustomers();

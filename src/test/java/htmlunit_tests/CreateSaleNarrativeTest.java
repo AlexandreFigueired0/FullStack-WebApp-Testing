@@ -1,6 +1,7 @@
 package htmlunit_tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -103,6 +104,24 @@ public class CreateSaleNarrativeTest {
 		////////////////////////// REVERT ///////////////////////////////////////
 		reportPage =  HtmlUnitUtils.removeSale(page,VAT,SALE_ID);
 
+	}
+	
+	/**
+	 * Test related to the narrative in 2. c), to open sales
+	 * Try to create a sale with a vat with the correct format, but with no client associated to it.
+	 * 
+	 * Result: Test failed. 
+	 * Fix: When creating a sale, check if there's a customer with the given vat
+	 * After the fix the test passes
+	 * 
+	 * @requires no customer with vat = 123456789
+	 * @throws IOException
+	 */
+	@Test
+	public void openSaleWithNonExistentCustomerWithCustomerVat() throws IOException {
+		final String VAT = "123456789"; 
+		HtmlPage reportPage =  HtmlUnitUtils.createSale(page,VAT);
+		assertTrue(reportPage.asText().contains("Error Messages"));
 	}
 
 

@@ -1,6 +1,8 @@
 package htmlunit_tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,6 +62,7 @@ public class InsertTwoNewCustomersNarrativeTest {
 	 * there are 2 new rows in the customers table, with the added customers
 	 * In the end the two customers inserted are removed
 	 * 
+	 * @requires no customers with vat 123456789 and 512345678
 	 * @throws IOException
 	 */
 	@Test
@@ -98,6 +101,26 @@ public class InsertTwoNewCustomersNarrativeTest {
 		reportPage = HtmlUnitUtils.removeCustomer(page,VAT1);
 		reportPage = HtmlUnitUtils.removeCustomer(page,VAT2);
 
+	}
+	
+	/**
+	 * Test associated with the narrative on 2. b), creating customers
+	 * Tests the insertion of a client with negative phone number
+	 * 
+	 * Result: Test failed.
+	 * Fix: Add verification for negative phone numbers
+	 * After fix the test passes
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void insertCustomerWithNegativePhoneNumber() throws IOException {
+		final String VAT = "123456789";
+		final String DESIG = "desgination1";
+		final String PHONE = "-1";
+		
+		HtmlPage reportPage= HtmlUnitUtils.createCustomer(page,VAT,DESIG,PHONE);
+		assertTrue(reportPage.asText().contains("Error Messages"));
 	}
 
 

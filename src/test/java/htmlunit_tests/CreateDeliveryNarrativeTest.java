@@ -201,25 +201,11 @@ public class CreateDeliveryNarrativeTest {
 		saleIdInput.setValueAttribute(SALE_ID);
 		HtmlInput finalSubmit = createDeliveryForm.getInputByValue("Insert");
 
-		////////// IF THIS HAPPENS THE ASSERTION SHOULD FAIL
-		assertThrows(Exception.class, () ->{
-			try {
-				HtmlPage finalPage = finalSubmit.click();
-				// 3 Verify the delivery is there
-				HtmlTable deliveryTable = (HtmlTable) finalPage.getByXPath("//table").get(0);
-				HtmlTableRow latestDelivery = deliveryTable.getRow(deliveryTable.getRowCount() -1);
-				List<HtmlTableCell> deliveryCells = latestDelivery.getCells();
-				
-				assertEquals(SALE_ID, deliveryCells.get(1).asText());
-				assertEquals(ADDRESS_ID, deliveryCells.get(2).asText());
-				
-			}
-			catch(Exception e) {
-				 HtmlUnitUtils.removeSale(page,VAT,SALE_ID);
-				throw new Exception();
-			}
-		});
-		//////////////////////////////////////////////////////
+		HtmlPage finalPage = finalSubmit.click();
+		assertTrue(finalPage.asText().contains("Error Messages"));
+		
+		//////////////////////// REVERT ////////////////////////////////
+		reportPage =  HtmlUnitUtils.removeSale(page, VAT,SALE_ID);
 	}
 	
 
