@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import webapp.persistence.AddressFinder;
 import webapp.persistence.PersistenceException;
 import webapp.persistence.SaleDeliveryRowDataGateway;
 import webapp.persistence.SaleRowDataGateway;
@@ -115,6 +116,10 @@ public enum SaleService {
 	
 	public int addSaleDelivery(int sale_id, int addr_id) throws ApplicationException {
 		try {
+			//////////////////// ADDED BY TESTER: its needed to check if the address id is a valid address /////////////////////////////////
+			// if address doesnt exist throws exeception
+			new AddressFinder().getAddressById(addr_id);
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			SaleRowDataGateway s = new SaleRowDataGateway().getSaleById(sale_id);
 			SaleDeliveryRowDataGateway sale = new SaleDeliveryRowDataGateway(sale_id, s.getCustomerVat() ,addr_id);
 			sale.insert();

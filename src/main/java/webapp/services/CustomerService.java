@@ -7,6 +7,7 @@ import webapp.persistence.AddressRowDataGateway;
 import webapp.persistence.CustomerFinder;
 import webapp.persistence.CustomerRowDataGateway;
 import webapp.persistence.PersistenceException;
+import webapp.persistence.SaleRowDataGateway;
 
 
 /**
@@ -150,6 +151,11 @@ public enum CustomerService {
 			throw new ApplicationException ("Invalid VAT number: " + vat);
 		else try {
 			CustomerRowDataGateway customer = new CustomerFinder().getCustomerByVATNumber(vat);
+			///////////////////////////////////////// ADDED BY TESTER: To delete customer sales ////////////////////////////
+			for (SaleRowDataGateway srdg : new SaleRowDataGateway().getAllSales(vat)) {
+				srdg.delete();
+			}
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			customer.removeCustomer();
 		} catch (PersistenceException e) {
 				throw new ApplicationException ("Customer with vat number " + vat + " doesn't exist.", e);

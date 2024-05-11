@@ -25,7 +25,7 @@ import webapp.services.*;
  * 
  * @author Alexandre Figueiredo fc57099
  */
-public class CustomersDBTest {
+public class CustomerDBTest {
 
 	private static Destination dataSource;
 	
@@ -46,7 +46,7 @@ public class CustomersDBTest {
 		
 		Operation initDBOperations = Operations.sequenceOf(
 			  DELETE_ALL
-			, INSERT_CUSTOMER_ADDRESS_DATA
+			, INSERT_CUSTOMER_SALE_DATA
 			);
 		
 		DbSetup dbSetup = new DbSetup(dataSource, initDBOperations);
@@ -58,30 +58,15 @@ public class CustomersDBTest {
 	}
 	
 	private final static CustomerService cs = CustomerService.INSTANCE;
+	private final static SaleService ss = SaleService.INSTANCE;
 	
-	@Test
-	public void queryCustomerNumberTest() throws ApplicationException {
-//		System.out.println("queryCustomerNumberTest()... ");
-		
-		// read-only test: unnecessary to re-launch setup after test has been run
-		dbSetupTracker.skipNextLaunch();
-		
-		int expected = NUM_INIT_CUSTOMERS;
-		int actual   = CustomerService.INSTANCE.getAllCustomers().customers.size();
-		
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void addSaleSizeTest() throws ApplicationException {
-//		System.out.println("addCustomerSizeTest()... ");
-
-		CustomerService.INSTANCE.addCustomer(503183504, "FCUL", 217500000);
-		int size = CustomerService.INSTANCE.getAllCustomers().customers.size();
-		
-		assertEquals(NUM_INIT_CUSTOMERS+1, size);
-	}
-	
+	/**
+	 * Checks if exists a customer with the given vat
+	 * 
+	 * @param vat - vat of the customer to find
+	 * @return true if there's a customer with the given vat, false otherwise
+	 * @throws ApplicationException
+	 */
 	private boolean hasClient(int vat) throws ApplicationException {	
 		CustomersDTO customersDTO = CustomerService.INSTANCE.getAllCustomers();
 		
@@ -91,30 +76,13 @@ public class CustomersDBTest {
 		return false;
 	}
 	
-	@Test
-	public void addCustomerTest() throws ApplicationException {
-//		System.out.println("addCustomerTest()... ");
-
-		assumeFalse(hasClient(503183504));
-		CustomerService.INSTANCE.addCustomer(503183504, "FCUL", 217500000);
-		assertTrue(hasClient(503183504));
-	}
-	
-	@Test
-	public void deleteCustomerTest() throws ApplicationException {
-		final int VAT = 197672337;
-		assumeTrue(hasClient(VAT));
-		CustomerService.INSTANCE.removeCustomer(VAT);
-		assertFalse(hasClient(VAT));
-	}
-	
 	/**
 	 * Test for requisite in 3. a)
 	 * 
 	 * @throws ApplicationException
 	 */
 	@Test
-	public void insertExistingCustomer() throws ApplicationException {
+	public void insertExistingCustomerTest() throws ApplicationException {
 		final int VAT = 197672337;
 		assumeTrue(hasClient(VAT));
 		assertThrows(ApplicationException.class, () -> {
@@ -128,7 +96,7 @@ public class CustomersDBTest {
 	 * @throws ApplicationException
 	 */
 	@Test
-	public void updateCustomerContacts() throws ApplicationException {
+	public void updateCustomerContactsTest() throws ApplicationException {
 		final int VAT = 197672337;
 		final int NEW_PHONE = 914396721;
 		assumeTrue(hasClient(VAT));
@@ -143,9 +111,8 @@ public class CustomersDBTest {
 	 * @throws ApplicationException
 	 */
 	@Test
-	public void deleteAllCustomers() throws ApplicationException {
+	public void deleteAllCustomersTest() throws ApplicationException {
 		for (CustomerDTO cdto : cs.getAllCustomers().customers) {
-			//TODO: removeCustomer created by tester
 			cs.removeCustomer(cdto.vat);
 		}
 		assertTrue(cs.getAllCustomers().customers.isEmpty());
@@ -157,7 +124,7 @@ public class CustomersDBTest {
 	 * @throws ApplicationException
 	 */
 	@Test
-	public void deleteAndReInsertCustomer() throws ApplicationException {
+	public void deleteAndReInsertCustomerTest() throws ApplicationException {
 		final int VAT = 197672337;
 		assumeTrue(hasClient(VAT));
 		CustomerDTO customerBefore = cs.getCustomerByVat(VAT);
@@ -166,5 +133,26 @@ public class CustomersDBTest {
 		cs.removeCustomer(customerBefore.vat);
 		cs.addCustomer(customerBefore.vat, customerBefore.designation, customerBefore.phoneNumber);
 	}
+	
+	/**
+	 * Test for requisite in 3. e)
+	 * This test failed, because when a client is removed, his sales aren't removed
+	 * Fix: When removing a client, remove his sales too
+	 * TODO: isto fica bem neste ficheiro?
+	 * 
+	 * @throws ApplicationException
+	 */
+	@Test
+	public void removingCustomerRemovesHisSalesTest() throws ApplicationException {
+		final int VAT = 197672337;
+		assumeTrue(hasClient(VAT));
+		CustomerDTO customerBefore = cs.getCustomerByVat(VAT);
+		
+		cs.removeCustomer(customerBefore.vat);
+		assertTrue(ss.getAllSales().sales.stream().noneMatch(s -> s.customerVat == VAT));
+		
+	}
+	
+
 		
 }

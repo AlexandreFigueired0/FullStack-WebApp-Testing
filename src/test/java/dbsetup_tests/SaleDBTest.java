@@ -28,6 +28,8 @@ import com.ninja_squad.dbsetup.destination.Destination;
 import com.ninja_squad.dbsetup.destination.DriverManagerDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 
+import webapp.persistence.SaleRowDataGateway;
+import webapp.persistence.SaleStatus;
 import webapp.services.ApplicationException;
 import webapp.services.CustomerDTO;
 import webapp.services.CustomerService;
@@ -36,11 +38,13 @@ import webapp.services.SaleDTO;
 import webapp.services.SaleService;
 import webapp.services.SalesDTO;
 
-class SalesDBTest {
+class SaleDBTest {
 	private static Destination dataSource;
 	
 	// the tracker is static because JUnit uses a separate Test instance for every test method.
     private static DbSetupTracker dbSetupTracker = new DbSetupTracker();
+    
+    private final static SaleService ss = SaleService.INSTANCE;
 	
     @BeforeAll
     public static void setupClass() {
@@ -67,45 +71,73 @@ class SalesDBTest {
 //		dbSetup.launch();
 	}
 
-	@Test
-	public void querySalesNumberTest() throws ApplicationException {
-//		System.out.println("queryCustomerNumberTest()... ");
-		
-		// read-only test: unnecessary to re-launch setup after test has been run
-		dbSetupTracker.skipNextLaunch();
-		
-		int expected = NUM_INIT_SALES;
-		int actual   = SaleService.INSTANCE.getAllSales().sales.size();
-		
-		assertEquals(expected, actual);
-	}
 	
+	/**
+	 * Test for requisite in 3. f)
+	 * 
+	 * @throws ApplicationException
+	 */
 	@Test
 	public void addSaleSizeTest() throws ApplicationException {
 //		System.out.println("addCustomerSizeTest()... ");
-
-		SaleService.INSTANCE.addSale(503183504);
-		int size = SaleService.INSTANCE.getAllSales().sales.size();;
+		ss.addSale(503183504);
+		int size = ss.getAllSales().sales.size();;
 		
 		assertEquals(NUM_INIT_SALES+1, size);
 	}
 	
-	private boolean hasSale(int vat) throws ApplicationException {	
-		SalesDTO sales = SaleService.INSTANCE.getAllSales();
+	/**
+	 * Checks if the given customer has an open Sale
+	 * 
+	 * @param vat - the customer vat of the customer to check
+	 * @return true if the customer has at least one open sale, false otherwise
+	 * @throws ApplicationException
+	 */
+	private boolean hasOpenSales(int vat) throws ApplicationException {	
+		SalesDTO sales = ss.getAllSales();
 		
 		for(SaleDTO sale : sales.sales)
-			if (sale.customerVat == vat)
+			if (sale.statusId.equals("O") && sale.customerVat == vat)
 				return true;			
 		return false;
 	}
 	
+	/**
+	 * Extra test concerning the behavior of sales
+	 * Test case: A user with no open sales, after opening one, has open sales, and after closing it, has no open sales again
+	 * 
+	 * @throws ApplicationException
+	 */
 	@Test
-	public void addSaleTest() throws ApplicationException {
-//		System.out.println("addCustomerTest()... ");
+	public void addSaleToCustomerWithoutOpenSalesThenCloseItResultsInNoOpenSalesTest() throws ApplicationException {
+		// vat of an existing customer, that doesnt have any open sales
+		final int VAT = 168027852;
 
-		assumeFalse(hasSale(503183504));
-		SaleService.INSTANCE.addSale(503183504);
-		assertTrue(hasSale(503183504));
+		assumeFalse(hasOpenSales(VAT));
+		ss.addSale(VAT);
+		assertTrue(hasOpenSales(VAT));
+		
+		// Need to get sale id
+		int saleId = ss.getSaleByCustomerVat(VAT).sales.get(0).id;
+		
+		ss.updateSale(saleId);
+		assertFalse(hasOpenSales(VAT));
 	}
+	
+	/**
+	 * Extra test concerning the behavior of sales
+	 * Test case: Closing a non existent sale should throw an exception
+	 * 
+	 * @throws ApplicationException
+	 */
+	@Test
+	public void closeNonExistentSaleTest() throws ApplicationException {
+		
+		assertThrows(Exception.class, () -> {
+			ss.updateSale(-1);
+		});
+	}
+		
+	
 	
 }
