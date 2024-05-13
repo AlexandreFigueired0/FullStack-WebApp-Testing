@@ -20,9 +20,6 @@ public class AddSalePageController extends PageController{
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		SaleService ss = SaleService.INSTANCE;
-		///////////////////// Added by tester ///////////////////
-		CustomerService cs = CustomerService.INSTANCE;
-		////////////////////////////////////////////////////////
 	
 		SalesHelper sh = new SalesHelper();
 		request.setAttribute("salesHelper", sh);
@@ -31,9 +28,6 @@ public class AddSalePageController extends PageController{
 			String vat = request.getParameter("customerVat");
 			if (isInt(sh, vat, "Invalid VAT number")) {
 				int vatNumber = intValue(vat);
-				///////////////// Added by tester /////////////
-				cs.getCustomerByVat(vatNumber); // if customer doesn't exist, this throws and exception
-				////////////////////////////////////////////////
 				ss.addSale(vatNumber);
 				SalesDTO s = ss.getSaleByCustomerVat(vatNumber);
 				sh.fillWithSales(s.sales);

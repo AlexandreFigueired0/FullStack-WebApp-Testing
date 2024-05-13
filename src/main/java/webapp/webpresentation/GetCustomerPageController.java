@@ -42,7 +42,13 @@ public class GetCustomerPageController extends PageController {
 			String door = request.getParameter("door");
 			String postalCode = request.getParameter("postalCode");
 			String locality = request.getParameter("locality");
-			if (isInt(ch, vat, "Invalid VAT number") || isInt(ash, vat, "Invalid VAT number")) {
+			///////////////// MODIFIED BY TESTER: Added verifications for the addresses /////////////////
+			if ((isInt(ch, vat, "Invalid VAT number")) &&
+				(isFilled(ch, address, "Empty address")) &&
+				(isFilled(ch, door, "Empty door")) &&
+				(isFilled(ch, postalCode, "Empty postal-code")) &&
+				(isFilled(ch, locality, "Empty locality") )) {
+
 				int vatNumber = intValue(vat);
 				ch.fillWithCustomer(cs.getCustomerByVat(vatNumber));
 				if(address != null) {
@@ -52,6 +58,11 @@ public class GetCustomerPageController extends PageController {
 				ash.fillWithAddresses(a.addrs);
 				request.getRequestDispatcher("CustomerInfo.jsp").forward(request, response);
 			}
+//			//////// ADDED BY TESTER: Display the error related to the format of the inputs /////////////
+			else {
+				throw new ApplicationException("");
+			}
+
 		} catch (ApplicationException e) {
 			ch.addMessage("It was not possible to fulfill the request: " + e.getMessage());
 			request.getRequestDispatcher("CustomerError.jsp").forward(request, response); 

@@ -1,6 +1,8 @@
 package htmlunit_tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.List;
@@ -115,6 +117,26 @@ public class InsertTwoAddressesToCustomerNarrativeTest {
 			reportPage = HtmlUnitUtils.removeAddress(page,VAT,ADDRESS+i, DOOR+i, POSTAL_CODE+i, LOCALITY+i);
 		}
 
+	}
+	
+	/**
+	 * Test associated with the narrative on 2. a), creating addresses
+	 * Tests the insertion of an Address with empty files
+	 * 
+	 * Result: Test failed.
+	 * Fix: Verify if the address fields given are not empty
+	 * After fix the test passes
+	 * 
+	 * @requires a customer with vat = 197672337
+	 * @throws IOException
+	 */
+	@Test 
+	public void insertEmptyAdressTest() throws IOException{
+		final String VAT = "197672337";
+		
+		HtmlPage reportPage = HtmlUnitUtils.createAdress(page,VAT,"", "", "", "");
+		String textReportPage = reportPage.asText();
+		assertTrue(textReportPage.contains("Error Message"));
 	}
 
 	

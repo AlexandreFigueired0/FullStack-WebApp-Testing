@@ -80,7 +80,7 @@ class SaleDBTest {
 	@Test
 	public void addSaleSizeTest() throws ApplicationException {
 //		System.out.println("addCustomerSizeTest()... ");
-		ss.addSale(503183504);
+		ss.addSale(197672337);
 		int size = ss.getAllSales().sales.size();;
 		
 		assertEquals(NUM_INIT_SALES+1, size);

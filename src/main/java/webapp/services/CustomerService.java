@@ -151,7 +151,7 @@ public enum CustomerService {
 			throw new ApplicationException ("Invalid VAT number: " + vat);
 		else try {
 			CustomerRowDataGateway customer = new CustomerFinder().getCustomerByVATNumber(vat);
-			///////////////////////////////////////// ADDED BY TESTER: To delete customer sales ////////////////////////////
+			//////////////////////////// ADDED BY TESTER: Delete customer sales ////////////////////////////
 			for (SaleRowDataGateway srdg : new SaleRowDataGateway().getAllSales(vat)) {
 				srdg.delete();
 			}

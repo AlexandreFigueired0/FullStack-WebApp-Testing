@@ -22,6 +22,10 @@ import webapp.persistence.SaleStatus;
 public enum SaleService {
 	INSTANCE;
 	
+	///////////////////// Added by tester ///////////////////
+	private static final CustomerService cs = CustomerService.INSTANCE;
+	////////////////////////////////////////////////////////
+	
 	public SalesDTO getSaleByCustomerVat (int vat) throws ApplicationException {
 		if (!isValidVAT (vat))
 			throw new ApplicationException ("Invalid VAT number: " + vat);
@@ -55,6 +59,9 @@ public enum SaleService {
 	
 	public void addSale(int customerVat) throws ApplicationException {
 		try {
+			///////////////// Added by tester /////////////
+			cs.getCustomerByVat(customerVat); // if customer doesn't exist, this throws and exception
+			////////////////////////////////////////////////
 			SaleRowDataGateway sale = new SaleRowDataGateway(customerVat, new Date());
 			sale.insert();
 			
