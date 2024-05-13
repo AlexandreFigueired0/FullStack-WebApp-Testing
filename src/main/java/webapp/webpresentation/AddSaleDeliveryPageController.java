@@ -49,6 +49,7 @@ public class AddSaleDeliveryPageController extends PageController{
 			}
 			if(isInt(ash, vat, "Invalid VAT number")) {
 				int vatNumber = intValue(vat);
+				cs.getCustomerByVat(vatNumber);
 				AddressesDTO asd = cs.getAllAddresses(vatNumber);
 				ash.fillWithAddresses(asd.addrs);
 				SalesDTO ssd = ss.getSaleByCustomerVat(vatNumber);

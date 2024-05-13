@@ -94,7 +94,7 @@ public class InsertTwoAddressesToCustomerNarrativeTest {
 		final String LOCALITY = "locality";
 
 		for(int i = 0; i < 2; i++) {
-			reportPage = HtmlUnitUtils.createAdress(page,VAT,ADDRESS+i, DOOR+i, POSTAL_CODE+i, LOCALITY+i);
+			reportPage = HtmlUnitUtils.createAddress(page,VAT,ADDRESS+i, DOOR+i, POSTAL_CODE+i, LOCALITY+i);
 		}
 
 		HtmlTable addressesTable = (HtmlTable) reportPage.getByXPath("//table").get(0);
@@ -134,7 +134,7 @@ public class InsertTwoAddressesToCustomerNarrativeTest {
 	public void insertEmptyAdressTest() throws IOException{
 		final String VAT = "197672337";
 		
-		HtmlPage reportPage = HtmlUnitUtils.createAdress(page,VAT,"", "", "", "");
+		HtmlPage reportPage = HtmlUnitUtils.createAddress(page,VAT,"", "", "", "");
 		String textReportPage = reportPage.asText();
 		assertTrue(textReportPage.contains("Error Message"));
 	}

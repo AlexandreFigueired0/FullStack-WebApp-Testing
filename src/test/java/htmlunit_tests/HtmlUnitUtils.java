@@ -63,7 +63,7 @@ public class HtmlUnitUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static HtmlPage createAdress(HtmlPage page, String vat, String address, String door, String postalCode, String locality) throws IOException {
+	public static HtmlPage createAddress(HtmlPage page, String vat, String address, String door, String postalCode, String locality) throws IOException {
 		HtmlAnchor addAddressToCustomerLink = page.getAnchorByHref("addAddressToCustomer.html");
 		HtmlPage nextPage = (HtmlPage) addAddressToCustomerLink.openLinkInNewWindow();
 		HtmlForm addAdressForms = nextPage.getForms().get(0);

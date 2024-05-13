@@ -97,7 +97,7 @@ public class CreateDeliveryNarrativeTest {
 		final String DOOR = "test_door";
 		final String POSTAL_CODE = "test_postal-code";
 		final String LOCALITY = "test_locality";
-		reportPage =  HtmlUnitUtils.createAdress(page,VAT,ADDRESS, DOOR, POSTAL_CODE, LOCALITY);
+		reportPage =  HtmlUnitUtils.createAddress(page,VAT,ADDRESS, DOOR, POSTAL_CODE, LOCALITY);
 
 		// 3. Create a delivery
 		HtmlAnchor createDeliveryLink = page.getAnchorByHref("saleDeliveryVat.html");
@@ -128,6 +128,8 @@ public class CreateDeliveryNarrativeTest {
 		assertEquals(VAT ,saleCells.get(4).asText());
 
 		final String ADDRESS_ID= addressCells.get(0).asText();
+		
+		//3.2 Fill the form and submit
 		createDeliveryForm = reportPage.getForms().get(0);
 		HtmlInput addressIdInput = createDeliveryForm.getInputByName("addr_id");
 		addressIdInput.setValueAttribute(ADDRESS_ID);
@@ -165,7 +167,7 @@ public class CreateDeliveryNarrativeTest {
 	 * Fix: Change SUT, to verify that the address id inserted corresponds to an address of the customer.
 	 * After the fix, the test now passes
 	 * 
-	 * In the end the delivery and sale created are deleted
+	 * In the end the  sale created is deleted
 	 * 
 	 * @requires customer with vat = 197672337
 	 * @throws IOException
@@ -206,6 +208,38 @@ public class CreateDeliveryNarrativeTest {
 		
 		//////////////////////// REVERT ////////////////////////////////
 		reportPage =  HtmlUnitUtils.removeSale(page, VAT,SALE_ID);
+	}
+	
+	/**
+	 * Test for the narrative  2. e), but inserting valid VAT, but that isnt associated with any customer.
+	 * Test designed to test a possible problem detected while manually testing the app in a browser
+	 * the flow is the same as createCustomerThenSaleThenDeliveryAndShowDeliveryTest, but it uses a valid
+	 * vat but that isn't associated with any customer in the system.
+	 * 
+	 * Result: Test failed
+	 * Fix: Change SUT, to verify that the given vat is associated to an exsiting customer
+	 * After the fix, the test now passes
+	 * 
+	 * In the end the address and sale created are deleted
+	 * 
+	 * @requires no customer with vat = 123456789
+	 * @throws IOException
+	 */
+	@Test
+	public void createDeliveryWithNonExsitingVat() throws IOException {
+		final String VAT = "123456789";
+		
+		// Try to create the delivery
+		HtmlAnchor createDeliveryLink = page.getAnchorByHref("saleDeliveryVat.html");
+		HtmlPage nextPage = (HtmlPage) createDeliveryLink.openLinkInNewWindow();
+		HtmlForm createDeliveryForm = nextPage.getForms().get(0);
+
+		HtmlInput vatInput = createDeliveryForm.getInputByName("vat");
+		vatInput.setValueAttribute(VAT);
+		HtmlInput submit = createDeliveryForm.getInputByValue("Get Customer");
+		HtmlPage reportPage = submit.click();
+		String textReportPage = reportPage.asText();
+		assertTrue(textReportPage.contains("Error Message"));
 	}
 	
 
