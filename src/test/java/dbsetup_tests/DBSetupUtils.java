@@ -15,7 +15,8 @@ import webapp.persistence.PersistenceException;
  * API: http://dbsetup.ninja-squad.com/apidoc/2.1.0/index.html
  * Best practices: http://dbunit.sourceforge.net/bestpractices.html
  * 
- * @author jpn
+ * @author jpn 
+ * @author Alexandre Figueiredo fc57099
  */
 public class DBSetupUtils {
 	

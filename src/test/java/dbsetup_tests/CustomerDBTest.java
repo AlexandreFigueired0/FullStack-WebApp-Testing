@@ -21,7 +21,8 @@ import com.ninja_squad.dbsetup.operation.Operation;
 import webapp.services.*;
 
 /**
- * Class to test the different requisites presented in point 3. of the vvs2 assignment
+ * Class to test the different requisites presented in point 3. of the vvs2 assignment,
+ * related to Customers
  * 
  * @author Alexandre Figueiredo fc57099
  */
@@ -129,7 +130,6 @@ public class CustomerDBTest {
 		assumeTrue(hasClient(VAT));
 		CustomerDTO customerBefore = cs.getCustomerByVat(VAT);
 		
-		//TODO: usar assertNotThrows? é que se lancar excecao o teste falha, mas se nao lança o teste passa, sem ser necesario o throws
 		cs.removeCustomer(customerBefore.vat);
 		cs.addCustomer(customerBefore.vat, customerBefore.designation, customerBefore.phoneNumber);
 	}
@@ -138,7 +138,6 @@ public class CustomerDBTest {
 	 * Test for requisite in 3. e)
 	 * This test failed, because when a client is removed, his sales aren't removed
 	 * Fix: When removing a client, remove his sales too
-	 * TODO: isto fica bem neste ficheiro?
 	 * 
 	 * @throws ApplicationException
 	 */

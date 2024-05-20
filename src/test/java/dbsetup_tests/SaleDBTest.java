@@ -38,6 +38,12 @@ import webapp.services.SaleDTO;
 import webapp.services.SaleService;
 import webapp.services.SalesDTO;
 
+/**
+ * Class to test the different requisites presented in point 3. of the vvs2 assignment,
+ * related to Sales
+ * 
+ * @author Alexandre Figueiredo fc57099
+ */
 class SaleDBTest {
 	private static Destination dataSource;
 	
@@ -104,7 +110,8 @@ class SaleDBTest {
 	
 	/**
 	 * Extra test concerning the behavior of sales
-	 * Test case: A user with no open sales, after opening one, has open sales, and after closing it, has no open sales again
+	 * Test case: A user with no open sales, after opening one, has open sales,
+	 * and after closing it, has no open sales again
 	 * 
 	 * @throws ApplicationException
 	 */

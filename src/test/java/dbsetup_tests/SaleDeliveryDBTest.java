@@ -33,6 +33,12 @@ import webapp.services.SaleDTO;
 import webapp.services.SaleService;
 import webapp.services.SalesDTO;
 
+/**
+ * Class to test the different requisites presented in point 3. of the vvs2 assignment,
+ * related to SaleDeliveries
+ * 
+ * @author Alexandre Figueiredo fc57099
+ */
 class SaleDeliveryDBTest {
 	private static Destination dataSource;
 	
@@ -90,7 +96,8 @@ class SaleDeliveryDBTest {
 	
 	/**
 	 * Extra test concerning the behavior of saledeliveries
-	 * Test case: add a SaleDelivery to a customer with no SaleDeliveries, after that he should have SaleDeliveries
+	 * Test case: add a SaleDelivery to a customer with no SaleDeliveries,
+	 * after that he should have SaleDeliveries
 	 * 
 	 * @throws ApplicationException
 	 */
